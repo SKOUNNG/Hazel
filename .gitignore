@@ -1,0 +1,7 @@
+#git忽略的目录
+.vs/
+bin/
+bin-int/
+
+#git忽略的文件
+*.user
