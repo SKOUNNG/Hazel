@@ -4,6 +4,9 @@
 #include "Hazel/Events/KeyEvent.h"
 #include "Hazel/Events/MouseEvent.h"
 
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+
 namespace Hazel {
 
 	static void GLFWErrorCallback(const int code,const char* message)
@@ -43,9 +46,11 @@ namespace Hazel {
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
-
+		
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		HZ_CORE_ASSERT(status, "Glad 未初始化！");
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
