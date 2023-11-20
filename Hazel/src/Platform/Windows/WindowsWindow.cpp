@@ -9,7 +9,7 @@
 
 namespace Hazel {
 
-	static void GLFWErrorCallback(const int code,const char* message)
+	static void GLFWErrorCallback(const int code, const char* message)
 	{
 		HZ_CORE_ERROR("GLFW Error ({0}) : {1}", code, message);
 	}
@@ -46,7 +46,7 @@ namespace Hazel {
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
-		
+
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -95,6 +95,12 @@ namespace Hazel {
 					break;
 				}
 				}
+			});
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				KeyTypedEvent event(keycode);
+				data.EventCallback(event);
 			});
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
 			{
