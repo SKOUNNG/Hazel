@@ -5,7 +5,9 @@
 #include "Core.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
-
+/*
+* spdlog日志使用
+*/
 namespace Hazel
 {
 	class HAZEL_API Log

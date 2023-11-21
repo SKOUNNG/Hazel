@@ -3,7 +3,9 @@
 #include "Hazel/Layer.h"
 
 #include <vector>
-
+/*
+* ΩÁ√Ê∑÷≤„
+*/
 namespace Hazel {
 
 	class HAZEL_API LayerStack

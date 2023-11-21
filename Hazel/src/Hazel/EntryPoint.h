@@ -3,7 +3,9 @@
 #ifdef HZ_PLATFORM_WINDOWS
 
 extern Hazel::Application* Hazel::CreateApplication();
-
+/*
+* Ö÷º¯Êý
+*/
 int main(int argc, char** argv)
 {
 	Hazel::Log::Init();
