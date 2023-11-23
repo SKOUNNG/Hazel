@@ -12,11 +12,11 @@ public:
 	}
 	void OnUpdate() override
 	{
-		//HZ_INFO("ExampleLayer::Update");
+		//HZ_INFO("ExampleLayer::Update");//界面刷新
 	}
 	void OnEvent(Hazel::Event& event) override
 	{
-		HZ_TRACE("{0}", event);
+		//HZ_INFO("{0}", event);//打印事件操作
 	}
 };
 
