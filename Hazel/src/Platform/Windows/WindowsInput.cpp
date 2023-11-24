@@ -15,7 +15,7 @@ namespace Hazel
 
 		auto state = glfwGetKey(window, keycode);
 
-		return state == GLFW_PRESS || state == GLFW_RELEASE;//判断是否按下按键
+		return state == GLFW_PRESS || state == GLFW_REPEAT;//判断是否按下按键
 	}
 	bool WindowsInput::IsMouseButtonPressedImpl(int button)
 	{
