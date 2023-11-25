@@ -135,7 +135,7 @@ namespace Hazel
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		int keycode = e.GetKeyCode();
-		if (keycode > 0 && keycode < 65535)
+		if (keycode > 0 && keycode < 65536)
 		{
 			io.AddInputCharacter((unsigned short)keycode);
 		}

@@ -16,7 +16,9 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Hazel/vendor/GLFW/include"
 IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hazel/vendor/imgui"
+IncludeDir["glm"] = "Hazel/vendor/glm"
 
+-- 可以在此处添加需要引入premake文件的目录
 include "Hazel/vendor/GLFW"
 include "Hazel/vendor/Glad"
 include "Hazel/vendor/imgui"
@@ -36,7 +38,9 @@ project "Hazel"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		-- 这里可以添加需要包括在项目中的文件名称
+		-- "%{prj.name}/vendor/glm/glm/**.hpp"
 	}
 
 	includedirs
@@ -45,7 +49,8 @@ project "Hazel"
 		"%{prj.name}/src",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
@@ -102,7 +107,9 @@ project "Sandbox"
 	includedirs
 	{
 		"Hazel/vendor/spdlog/include",
-		"Hazel/src"
+		"Hazel/src",
+		"%{IncludeDir.glm}"
+
 	}
 
 	links
