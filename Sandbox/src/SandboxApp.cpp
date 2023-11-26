@@ -2,6 +2,8 @@
 
 #include <Hazel.h>
 
+#include "imgui/imgui.h"
+
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
@@ -35,6 +37,12 @@ public:
 		{
 			HZ_INFO("TAB按键被按下");
 		}
+	}
+	void OnImGuiRender() override
+	{
+		//ImGui::Begin("Test");
+		//ImGui::Text("Hello");
+		//ImGui::End();
 	}
 	//按键事件
 	void OnEvent(Hazel::Event& event) override
@@ -74,7 +82,6 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
-		PushOverlay(new Hazel::ImGuiLayer());
 	}
 	~Sandbox()
 	{
