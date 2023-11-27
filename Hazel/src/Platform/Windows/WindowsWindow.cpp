@@ -56,25 +56,26 @@ namespace Hazel {
 		SetVSync(true);
 
 		//设置GLFW回调
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)//设置窗口大小
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
+				HZ_ERROR("{0}, {1}", width, height);
 				data.Width = width;
 				data.Height = height;
 				WindowResizeEvent event(width, height);
 				data.EventCallback(event);
 			});
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)//窗口关闭
 			{
+				HZ_ERROR("程序关闭！");
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				WindowCloseEvent event;
 				data.EventCallback(event);
 			});
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-			{
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)//获取按键状态
+			{//key是按键，scancode不同平台的按键码，action按键状态
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
+				//HZ_ERROR("{0}, {1}, {2}, {3}", key, scancode, action, mods);
 				switch (action)
 				{
 				case GLFW_PRESS:
@@ -97,40 +98,42 @@ namespace Hazel {
 				}
 				}
 			});
-		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)//键盘输入获取
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				//HZ_ERROR("{0}", keycode);//键盘码获取
 				KeyTypedEvent event(keycode);
 				data.EventCallback(event);
 			});
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)//鼠标按键事件获取
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				switch (action)
+				switch (action)//action是鼠标按键状态
 				{
 				case GLFW_PRESS:
 				{
+					//按下
 					MouseButtonPressedEvent event(button);
 					data.EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
+					//释放
 					MouseButtonReleasedEvent event(button);
 					data.EventCallback(event);
 					break;
 				}
 				}
 			});
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)//鼠标滚轮
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 				MouseScrolledEvent event((float)xOffset, (float)yOffset);
 				data.EventCallback(event);
 			});
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)//获取鼠标位置
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -139,14 +142,15 @@ namespace Hazel {
 			});
 	}
 
-	void WindowsWindow::Shutdown()
+	void WindowsWindow::Shutdown()//关闭函数
 	{
 		glfwDestroyWindow(m_Window);
 	}
 
-	void WindowsWindow::OnUpdate()
+	void WindowsWindow::OnUpdate()//刷新函数
 	{
 		glfwPollEvents();
+		//HZ_ERROR("Update");
 		glfwSwapBuffers(m_Window);
 	}
 
