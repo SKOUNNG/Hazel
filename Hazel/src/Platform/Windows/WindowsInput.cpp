@@ -9,26 +9,27 @@ namespace Hazel
 {
 	Input* Input::s_Instance = new WindowsInput();
 
-	bool WindowsInput::IsKeyPressedImpl(int keycode)
+	bool WindowsInput::IsKeyPressedImpl(int keycode)//获取按键状态
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 
 		auto state = glfwGetKey(window, keycode);
-
+		//HZ_ERROR("{0}, {1}", keycode,state);
 		return state == GLFW_PRESS || state == GLFW_REPEAT;//判断是否按下按键
 	}
-	bool WindowsInput::IsMouseButtonPressedImpl(int button)
+	bool WindowsInput::IsMouseButtonPressedImpl(int button)//获取鼠标按键状态
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-
 		auto state = glfwGetMouseButton(window, button);
+		//HZ_ERROR("{0}", button);
 		return state == GLFW_PRESS;
 	}
-	std::pair<float, float> WindowsInput::GetMousePositionImpl()
+	std::pair<float, float> WindowsInput::GetMousePositionImpl()//获取鼠标位置，鼠标在程序框外也可以获取
 	{
 		auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		double x, y;
 		glfwGetCursorPos(window, &x, &y);
+		//HZ_ERROR("{0}, {1}", x, y);
 		return std::pair<float, float>(x, y);
 	}
 	float WindowsInput::GetMouseXImpl()

@@ -133,10 +133,11 @@ namespace Hazel {
 				MouseScrolledEvent event((float)xOffset, (float)yOffset);
 				data.EventCallback(event);
 			});
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)//获取鼠标位置
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+			//获取鼠标位置，鼠标移除程序则无法获取
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
+				//HZ_WARN("{0}, {1}", xPos, yPos);
 				MouseMovedEvent event((float)xPos, (float)yPos);
 				data.EventCallback(event);
 			});

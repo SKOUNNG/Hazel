@@ -33,10 +33,10 @@ public:
 	void OnUpdate() override
 	{
 		//HZ_INFO("ExampleLayer::Update");//界面刷新
-		if (Hazel::Input::IsKeyPressed(HZ_KEY_TAB))
-		{
-			HZ_INFO("TAB按键被按下");
-		}
+		//if (Hazel::Input::IsKeyPressed(HZ_KEY_TAB))
+		//{
+		//	HZ_INFO("TAB按键被按下");
+		//}
 	}
 	void OnImGuiRender() override
 	{

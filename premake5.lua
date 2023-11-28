@@ -40,7 +40,7 @@ project "Hazel"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		-- 这里可以添加需要包括在项目中的文件名称
-		-- "%{prj.name}/vendor/glm/glm/**.hpp"
+		-- "%{prj.name}/vendor/"
 	}
 
 	includedirs
