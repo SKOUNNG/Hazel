@@ -40,9 +40,9 @@ public:
 	}
 	void OnImGuiRender() override
 	{
-		//ImGui::Begin("Test");
-		//ImGui::Text("Hello");
-		//ImGui::End();
+		ImGui::Begin("Test");
+		ImGui::Text("Hello");
+		ImGui::End();
 	}
 	//按键事件
 	void OnEvent(Hazel::Event& event) override
