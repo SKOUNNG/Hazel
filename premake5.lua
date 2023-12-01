@@ -44,6 +44,11 @@ project "Hazel"
 		-- "%{prj.name}/vendor/"
 	}
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	includedirs
 	{
 		"%{prj.name}/vendor/spdlog/include",
@@ -60,11 +65,6 @@ project "Hazel"
 		"Glad",
 		"ImGui",
 		"opengl32.lib"
-	}
-
-	defines
-	{
-		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	filter "system:windows"
