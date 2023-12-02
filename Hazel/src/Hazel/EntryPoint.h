@@ -9,8 +9,8 @@ extern Hazel::Application* Hazel::CreateApplication();
 int main(int argc, char** argv)
 {
 	Hazel::Log::Init();
-	HZ_CORE_WARN("Init");
-	HZ_INFO("Hello");
+	HZ_CORE_INFO("Init ÎÄ¼þ: {0} :: {1}ÐÐ", __FILE__, __LINE__);
+	//HZ_INFO("Hello");
 
 	auto app = Hazel::CreateApplication();
 	app->Run();

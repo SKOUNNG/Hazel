@@ -53,7 +53,7 @@ namespace Hazel {
 		m_Context->Init();
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
-		SetVSync(true);
+		SetVSync(true);//设置垂直同步
 
 		//设置GLFW回调
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)//设置窗口大小
