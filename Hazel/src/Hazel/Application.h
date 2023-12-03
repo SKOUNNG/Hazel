@@ -7,6 +7,8 @@
 #include "Hazel/LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 
+#include "Hazel/Renderer/Shader.h"
+
 namespace Hazel
 {
 	class HAZEL_API Application
@@ -37,6 +39,8 @@ namespace Hazel
 
 		LayerStack m_LayerStack;
 		static Application* s_Instance;
+
+		std::unique_ptr<Shader> m_Shader;
 	};
 
 	Application* CreateApplication();
