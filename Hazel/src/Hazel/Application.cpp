@@ -5,10 +5,12 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
 #define BIND_EVENT_FN(x) std::bind(&x,this,std::placeholders::_1)
 
 namespace Hazel
 {
+
 	Application* Application::s_Instance = nullptr;
 	Application::Application()
 	{
@@ -20,31 +22,81 @@ namespace Hazel
 		m_ImGuiLayer = new ImGuiLayer();
 
 		PushOverlay(m_ImGuiLayer);
+		m_VertexArray.reset(VertexArray::Create());
 
-		//Vertex Array
-		glGenVertexArrays(1, &m_VertexArray);
-		glBindVertexArray(m_VertexArray);
-
-		float vertices[3 * 3] = {
-			-0.5f,-0.5f,0.0f,
-			0.5f,-0.5f,0.0f,
-			0.0f,0.5f,0.0f
+		float vertices[3 * 7] = {
+			-0.5f,-0.5f,0.0f,0.8f,0.1f,0.1f,1.0f,
+			0.5f,-0.5f,0.0f,0.1f,0.1f,0.8f,1.0f,
+			0.0f,0.5f,0.0f,0.1f,0.8f,0.1f,1.0f
 		};
 		//Vertex Buffer
-		m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		std::shared_ptr<VertexBuffer> vertexBuffer;
+		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+		BufferLayout layout = {
+			{ShaderDataType::Float3,"a_Position"},
+			{ShaderDataType::Float4,"a_Color"}
+		};
+		vertexBuffer->SetLayout(layout);
 
-		glEnableVertexAttribArray(0);
-
-		//第一个参数是索引，第二个是代表一个顶点的数字个数，第三个是顶点的类型，第四个是归一化，第五个是一个顶点占用多少字节，第六个是数据偏移量
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
-
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		uint32_t indices[3] = { 0,1,2 };
 
 		//Index Buffer
-		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		std::shared_ptr<IndexBuffer> indexBuffer;
+		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		m_VertexArray->SetIndexBuffer(indexBuffer);
+
+		m_SquareVA.reset(VertexArray::Create());
+
+		float squareVertices[3 * 4] = {
+			-0.75f,-0.75f,0.0f,
+			0.75f,-0.75f,0.0f,
+			0.75f,0.75f,0.0f,
+			-0.75f,0.75f,0.0f
+		};
+
+		std::shared_ptr<VertexBuffer> SquareVB;
+		SquareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		BufferLayout squareLayout = {
+			{ShaderDataType::Float3,"a_Position"},
+		};
+		SquareVB->SetLayout(squareLayout);
+		m_SquareVA->AddVertexBuffer(SquareVB);
+		uint32_t squareIndices[6] = { 0,1,2,2,3,0 };
+
+		//Index Buffer
+		std::shared_ptr<IndexBuffer> SquareIB;
+		SquareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		m_SquareVA->SetIndexBuffer(SquareIB);
 
 		//Shader
 		std::string vertexSrc = R"(
+		#version 460 core
+		layout(location = 0) in vec3 a_Position;
+		layout(location = 1) in vec4 a_Color;
+		out vec3 v_Position;
+		out vec4 v_Color;
+		void main()
+		{
+			v_Position = a_Position;
+			v_Color = a_Color;
+			gl_Position = vec4(a_Position,1.0);
+		}
+		)";
+		std::string fragmentSrc = R"(
+		#version 460 core
+		layout(location = 0) out vec4 color;
+		in vec3 v_Position;
+		in vec4 v_Color;
+		void main()
+		{
+			color = vec4(v_Position*0.5+0.5,1.0);
+			color = v_Color;
+		}
+		)";
+		m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
+		//Shader
+		std::string vertexSrc2 = R"(
 		#version 460 core
 		layout(location = 0) in vec3 a_Position;
 		out vec3 v_Position;
@@ -54,7 +106,7 @@ namespace Hazel
 			gl_Position = vec4(a_Position,1.0);
 		}
 		)";
-		std::string fragmentSrc = R"(
+		std::string fragmentSrc2 = R"(
 		#version 460 core
 		layout(location = 0) out vec4 color;
 		in vec3 v_Position;
@@ -63,11 +115,7 @@ namespace Hazel
 			color = vec4(v_Position*0.5+0.5,1.0);
 		}
 		)";
-		m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
-	}
-	Application::~Application()
-	{
-
+		m_Shader2.reset(new Shader(vertexSrc2, fragmentSrc2));
 	}
 
 	void Application::Run()
@@ -77,8 +125,14 @@ namespace Hazel
 			glClearColor(0.1, 0.1, 0.1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			m_Shader2->Bind();
+			m_SquareVA->Bind();
+			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);//画四边形
+
+
 			m_Shader->Bind();
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);//画三角形
+			m_VertexArray->Bind();
+			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);//画三角形
 
 			for (Layer* layer : m_LayerStack)
 			{
@@ -127,5 +181,10 @@ namespace Hazel
 	{
 		m_Running = false;
 		return true;
+	}
+
+	Application::~Application()
+	{
+
 	}
 }
