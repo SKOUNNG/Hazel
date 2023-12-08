@@ -3,7 +3,9 @@
 #include "Application.h"
 #include "Input.h"
 
-#include <glad/glad.h>
+#include "Hazel/Renderer/Renderer.h"
+
+//#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #define BIND_EVENT_FN(x) std::bind(&x,this,std::placeholders::_1)
@@ -122,17 +124,24 @@ namespace Hazel
 	{
 		while (m_Running)
 		{
-			glClearColor(0.1, 0.1, 0.1, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColor({ 0.1, 0.1, 0.1, 1 });
+			RenderCommand::Clear();
 
+			Renderer::BeginScene();
 			m_Shader2->Bind();
-			m_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);//画四边形
-
-
+			Renderer::Submit(m_SquareVA);
 			m_Shader->Bind();
-			m_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);//画三角形
+			Renderer::Submit(m_VertexArray);
+			Renderer::EndScene();
+
+
+
+			//m_Shader2->Bind();
+			//m_SquareVA->Bind();
+
+
+			//m_Shader->Bind();
+			//m_VertexArray->Bind();
 
 			for (Layer* layer : m_LayerStack)
 			{
