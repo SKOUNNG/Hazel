@@ -12,6 +12,8 @@
 #include "Hazel/Renderer/VertexArray.h"
 #include "Hazel/Renderer/OrthoGraphicCamera.h"
 
+#include "Hazel/Core/Timestep.h"
+
 namespace Hazel
 {
 	class HAZEL_API Application
@@ -34,14 +36,15 @@ namespace Hazel
 		}
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+
+	private:
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
-
-		//unsigned int m_VertexArray;
-
 		LayerStack m_LayerStack;
 		static Application* s_Instance;
+		Timestep m_Timestep;
+		float m_LastFrameTime = 0.0f;
 	};
 
 	Application* CreateApplication();
