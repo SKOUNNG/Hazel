@@ -109,7 +109,7 @@ public:
 		)";
 		m_Shader.reset(new Hazel::Shader(vertexSrc, fragmentSrc));
 		//Shader
-		std::string vertexSrc2 = R"(
+		std::string flatColorShaderVertexSrc = R"(
 		#version 460 core
 		layout(location = 0) in vec3 a_Position;
 		uniform mat4 u_ViewProjection;
@@ -121,16 +121,17 @@ public:
 			gl_Position = u_ViewProjection*u_Transform*vec4(a_Position,1.0);
 		}
 		)";
-		std::string fragmentSrc2 = R"(
+		std::string flatColorShaderFragmentSrc = R"(
 		#version 460 core
 		layout(location = 0) out vec4 color;
 		in vec3 v_Position;
+		uniform vec4 u_Color;
 		void main()
 		{
-			color = vec4(v_Position*0.5+0.5,1.0);
+			color = u_Color;
 		}
 		)";
-		m_Shader2.reset(new Hazel::Shader(vertexSrc2, fragmentSrc2));
+		m_FlatColorShader.reset(new Hazel::Shader(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
 	}
 	//轮询事件
 	void OnUpdate(Hazel::Timestep ts) override
@@ -170,13 +171,22 @@ public:
 
 		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
+		glm::vec4 redColor(0.8f, 0.2f, 0.3f, 1.0f);
+		glm::vec4 buleColor(0.2f, 0.3f, 0.8f, 1.0f);
+
+		//Hazel::MaterialRef material = new Hazel::Material(m_FlatColorShader);
+
 		for (int i = 0; i < 20; i++)
 		{
 			for (int j = 0; j < 20; j++)
 			{
 				glm::vec3 pos(i * 0.11f, j * 0.11f, 0.0f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				Hazel::Renderer::Submit(m_Shader2, m_SquareVA, transform);
+				if (i % 2 == 0)
+					m_FlatColorShader->UploadUniformFloat4("u_Color", redColor);
+				else
+					m_FlatColorShader->UploadUniformFloat4("u_Color", buleColor);
+				Hazel::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
 			}
 		}
 		Hazel::Renderer::Submit(m_Shader, m_VertexArray);
@@ -197,7 +207,7 @@ public:
 	}
 private:
 	std::shared_ptr<Hazel::Shader> m_Shader;
-	std::shared_ptr<Hazel::Shader> m_Shader2;
+	std::shared_ptr<Hazel::Shader> m_FlatColorShader;
 
 	std::shared_ptr<Hazel::VertexArray> m_VertexArray;
 	std::shared_ptr<Hazel::VertexArray> m_SquareVA;
