@@ -17,7 +17,7 @@ namespace Hazel
 	{
 		HZ_CORE_ASSERT(!s_Instance, "Application 总是存在！");
 		s_Instance = this;
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Scope<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 		//glfwSwapInterval(1);//设置垂直同步
 		m_ImGuiLayer = new ImGuiLayer();
